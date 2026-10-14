@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Donor Dashboard</h1>
+<p>Register available food for donation.</p>
+
+{% if request.query_params.get("error") == "quantity" %}
+<p class="error">Enter a valid food quantity.</p>
+{% elif request.query_params.get("error") == "deadline" %}
+<p class="error">Choose a future pickup deadline.</p>
+{% endif %}
+
+<form action="/donor/add" method="post" class="form-card">
+    <label>Restaurant / Hostel Name</label>
+    <input name="donor_name" required maxlength="100">
+
+    <label>Food Name</label>
+    <input name="food_name" required maxlength="100"
+           placeholder="Example: Vegetable rice">
+
+    <label>Category</label>
+    <select name="category" required>
+        <option value="Rice">Rice</option>
+        <option value="Meals">Meals</option>
+        <option value="Snacks">Snacks</option>
+        <option value="Bread">Bread</option>
+        <option value="Vegetables">Vegetables</option>
+    </select>
+
+    <label>Available Quantity (kg)</label>
+    <input name="quantity_kg" type="number" min="0.1"
+           max="10000" step="0.1" required>
+
+    <label>Pickup Location / City</label>
+    <input name="location" required maxlength="200"
+           placeholder="Example: Hyderabad">
+
+    <label>Pickup Deadline</label>
+    <input name="pickup_deadline" type="datetime-local" required>
+
+    <button type="submit">Publish Food Listing</button>
+</form>
+
+<h2>All Food Listings</h2>
+<div class="cards">
+    {% for item in listings %}
+    <article class="card">
+        <span class="tag">{{ item.status }}</span>
+        <h3>{{ item.food_name }}</h3>
+        <p>Donor: {{ item.donor_name }}</p>
+        <p>Quantity: {{ item.quantity_kg }} kg</p>
+        <p>Location: {{ item.location }}</p>
+        <p>Deadline: {{ item.pickup_deadline }}</p>
+    </article>
+    {% else %}
+    <p>No listings available.</p>
+    {% endfor %}
+</div>
+{% endblock %}

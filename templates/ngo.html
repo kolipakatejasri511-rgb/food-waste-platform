@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Find Available Food</h1>
+<p>Browse donations and request a suitable quantity.</p>
+
+<form action="/ngo" method="get" class="search-form">
+    <input name="location" value="{{ location }}"
+           placeholder="Search by location">
+    <button type="submit">Search</button>
+</form>
+
+{% if request.query_params.get("error") == "quantity" %}
+<p class="error">Requested quantity exceeds the available amount.</p>
+{% endif %}
+
+<div class="cards">
+    {% for item in listings %}
+    <article class="card">
+        <span class="tag">{{ item.category }}</span>
+        <h3>{{ item.food_name }}</h3>
+        <p>Donor: {{ item.donor_name }}</p>
+        <p>Available: {{ item.quantity_kg }} kg</p>
+        <p>Location: {{ item.location }}</p>
+        <p>Pickup deadline: {{ item.pickup_deadline }}</p>
+
+        <form action="/ngo/request/{{ item.id }}" method="post">
+            <label>NGO Name</label>
+            <input name="ngo_name" required maxlength="100">
+
+            <label>Quantity Needed (kg)</label>
+            <input name="requested_kg" type="number"
+                   min="0.1" max="{{ item.quantity_kg }}"
+                   step="0.1" required>
+
+            <button type="submit">Request Donation</button>
+        </form>
+    </article>
+    {% else %}
+    <p>No available listings match this search.</p>
+    {% endfor %}
+</div>
+{% endblock %}

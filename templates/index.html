@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+    <p class="eyebrow">SMART FOOD DONATION PLATFORM</p>
+    <h1>Good food deserves<br>another chance.</h1>
+    <p>
+        Predict food surplus, connect donors with NGOs,
+        and help reduce avoidable food waste.
+    </p>
+    <div class="actions">
+        <a class="button" href="/donor">Donate Food</a>
+        <a class="button secondary" href="/ngo">Find Donations</a>
+    </div>
+</section>
+
+<section class="stats">
+    <div class="stat">
+        <h2>{{ listings|length }}</h2>
+        <p>Recent available listings</p>
+    </div>
+    <div class="stat">
+        <h2>{{ total_donated }}</h2>
+        <p>Completed donation requests</p>
+    </div>
+</section>
+
+<h2>Available Food</h2>
+<div class="cards">
+    {% for item in listings %}
+    <article class="card">
+        <span class="tag">{{ item.category }}</span>
+        <h3>{{ item.food_name }}</h3>
+        <p>Quantity: {{ item.quantity_kg }} kg</p>
+        <p>Location: {{ item.location }}</p>
+        <p>Pickup by: {{ item.pickup_deadline }}</p>
+        <a href="/ngo" class="text-link">View donation options →</a>
+    </article>
+    {% else %}
+    <p>No food listings yet. Add the first donation!</p>
+    {% endfor %}
+</div>
+{% endblock %}

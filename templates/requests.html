@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Donation Requests</h1>
+<p>Review requests and update their status.</p>
+
+<div class="cards">
+    {% for donation, food in records %}
+    <article class="card">
+        <h3>{{ food.food_name }}</h3>
+        <p>Donor: {{ food.donor_name }}</p>
+        <p>NGO: {{ donation.ngo_name }}</p>
+        <p>Quantity requested: {{ donation.requested_kg }} kg</p>
+        <p>Location: {{ food.location }}</p>
+        <p>Status: <strong>{{ donation.status }}</strong></p>
+
+        {% if donation.status == "Pending" %}
+        <form action="/requests/{{ donation.id }}/update"
+              method="post">
+            <button name="status" value="Accepted">Accept</button>
+            <button name="status" value="Rejected"
+                    class="danger">Reject</button>
+        </form>
+        {% elif donation.status == "Accepted" %}
+        <form action="/requests/{{ donation.id }}/update"
+              method="post">
+            <button name="status" value="Completed">
+                Mark as Completed
+            </button>
+        </form>
+        {% endif %}
+    </article>
+    {% else %}
+    <p>No donation requests yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}
